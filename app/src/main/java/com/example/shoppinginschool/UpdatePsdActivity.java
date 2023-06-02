@@ -44,14 +44,15 @@ public class UpdatePsdActivity extends AppCompatActivity {
                 }
             }
         });
-        //取消按钮:对输入框内容清除，并返回
+        //取消按钮
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //password_update.setText("");
+                /* password_update.setText("");
                 Intent intent = new Intent(UpdatePsdActivity.this,PersonalFragment.class);
                 startActivity(intent);
-                finish();
+                finish();*/
+                goBack();
             }
         });
         //返回按钮点击监听
