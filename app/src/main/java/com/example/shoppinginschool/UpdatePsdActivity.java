@@ -41,7 +41,7 @@ public class UpdatePsdActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String isempty =password_update.getText().toString().trim();
                 if (! TextUtils.isEmpty(isempty)){
-                db.execSQL("update user set userPsd = ? where UserName = ?",new String[]{password_update.getText().toString(),username1});
+               myDBopenHelper.update(username1,password_update.getText().toString());
                 //showFragmentToast("密码修改成功,下次登录变更");
                 Toast.makeText(UpdatePsdActivity.this,"密码修改成功,下次登录变更",Toast.LENGTH_SHORT).show();
                 /*Intent intent = new Intent(UpdatePsdActivity.this,PersonalFragment.class);
