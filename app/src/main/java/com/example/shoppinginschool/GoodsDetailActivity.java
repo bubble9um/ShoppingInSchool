@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GoodsDetailActivity extends AppCompatActivity {
     private ImageButton imageButton;
@@ -46,11 +47,20 @@ public class GoodsDetailActivity extends AppCompatActivity {
             show_goods_price.setText(goodsPrice+"元");
             show_goods_img.setImageBitmap(MainActivity.convertStringToIcon(goodsImg));
         }
+        /* *
+        *
+        *点击返回imageview时，只能通过intent跳转，导致会重复开启Activity，设想用goBack调用onBackPressed方法，成功实现返回但购物车内数据不会更新
+        *                               有待修改
+        * */
+
         //ImageView 点击返回事件
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goBack();
+                //goBack();
+                Intent intent = new Intent(GoodsDetailActivity.this,MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         //添加到购物车
@@ -84,8 +94,16 @@ public class GoodsDetailActivity extends AppCompatActivity {
         if (currentView != null && currentView.equals(imageButton)) {
             finish();
         } else {
+            //refreshData();
             super.onBackPressed();
         }
     }
+
+   /*
+   private void refreshData() {
+        CartFragment cartFragment = new CartFragment();
+        cartFragment.onCreateView(getLayoutInflater(),(ViewGroup) findViewById(R.id.cart_fragment),null);
+    }
+    */
 
 }

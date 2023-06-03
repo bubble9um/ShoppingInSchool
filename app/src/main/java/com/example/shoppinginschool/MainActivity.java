@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Dialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     //图片String类型转Bitmap
     public static Bitmap convertStringToIcon(String st)

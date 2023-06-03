@@ -1,16 +1,22 @@
 package com.example.shoppinginschool;
 
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -86,11 +92,13 @@ public class CartFragment extends Fragment {
         myDBopenHelper = new MyDBopenHelper(getContext(),"GOODS_Database.db",null,1);
         db = myDBopenHelper.getReadableDatabase();
     }
-    private void loadData(){
+
+    public void loadData(){
         goods_sumprice.setText(myDBopenHelper.getSumPrice()+"元");
         CartAdapter adapter = new CartAdapter(myDBopenHelper.getAllCartData(),getContext());
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
         recy_view_cart.setLayoutManager(layoutManager);
         recy_view_cart.setAdapter(adapter);
     }
+
 }

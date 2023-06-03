@@ -39,7 +39,6 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
                 "recipePrice DOUBLE," +
                 "recipeImg TEXT," +
                 "recipeDes TEXT);");
-        //——————订单列表是否要建立——————
         /*db.execSQL("CREATE TABLE orders(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "orderNum INTEGER NOT NULL," +
@@ -102,7 +101,7 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
 
     public ArrayList<Cart> getAllCartData(){
         ArrayList<Cart> list = new ArrayList<Cart>();
-        Cursor cursor = db.query("cart_recipe",null,null,null,null,null,"recipeName");
+        Cursor cursor = db.query("cart_recipe",null,null,null,null,null,null);
         while(cursor.moveToNext()){
             String recipeName = cursor.getString(cursor.getColumnIndexOrThrow("recipeName"));
             String recipeImg = cursor.getString(cursor.getColumnIndexOrThrow("recipeImg"));

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,6 +19,8 @@ public class UpdatePsdActivity extends AppCompatActivity {
     SharedPreferences preferences;
     private String username1;
     EditText password_update;
+    MyDBopenHelper myDBopenHelper;
+    SQLiteDatabase db;
     android.widget.Button confrim,cancel;
     TextView username_update;
     @Override
@@ -29,15 +32,20 @@ public class UpdatePsdActivity extends AppCompatActivity {
         password_update = findViewById(R.id.password_update);
         confrim = findViewById(R.id.update_confirm);
         cancel = findViewById(R.id.cancel);
+        myDBopenHelper = new MyDBopenHelper(this,"GOODS_Database.db",null,1);
+        db = myDBopenHelper.getWritableDatabase();
+
         //确认更新按钮
         confrim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String isempty =password_update.getText().toString().trim();
                 if (! TextUtils.isEmpty(isempty)){
-                Intent intent = new Intent(UpdatePsdActivity.this,PersonalFragment.class);
-                startActivity(intent);
-                showFragmentToast("密码修改成功,下次登录变更");
+                db.execSQL("update user set userPsd = ? where UserName = ?",new String[]{password_update.getText().toString(),username1});
+                //showFragmentToast("密码修改成功,下次登录变更");
+                Toast.makeText(UpdatePsdActivity.this,"密码修改成功,下次登录变更",Toast.LENGTH_SHORT).show();
+                /*Intent intent = new Intent(UpdatePsdActivity.this,PersonalFragment.class);
+                startActivity(intent);*/
                 }
                 else {
                     Toast.makeText(UpdatePsdActivity.this,"请输入正确的密码",Toast.LENGTH_SHORT).show();
