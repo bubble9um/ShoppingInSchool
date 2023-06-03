@@ -1,12 +1,22 @@
 package com.example.shoppinginschool;
 
+import android.app.FragmentTransaction;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +24,10 @@ import androidx.fragment.app.Fragment;
  * create an instance of this fragment.
  */
 public class CartFragment extends Fragment {
-
+    private RecyclerView recy_view_cart;
+    private MyDBopenHelper myDBopenHelper;
+    TextView goods_sumprice;
+    private SQLiteDatabase db;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +72,25 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart_fragment, container, false);
+        initView(view);
+        loadData();
         return view;
+    }
+    public void onActivityCreated(@Nullable Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        loadData();
+    }
+    private void initView(View view){
+        recy_view_cart = view.findViewById(R.id.recy_view_cart);
+        goods_sumprice = view.findViewById(R.id.goods_sumprice);
+        myDBopenHelper = new MyDBopenHelper(getContext(),"GOODS_Database.db",null,1);
+        db = myDBopenHelper.getReadableDatabase();
+    }
+    private void loadData(){
+        goods_sumprice.setText(myDBopenHelper.getSumPrice()+"元");
+        CartAdapter adapter = new CartAdapter(myDBopenHelper.getAllCartData(),getContext());
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
+        recy_view_cart.setLayoutManager(layoutManager);
+        recy_view_cart.setAdapter(adapter);
     }
 }

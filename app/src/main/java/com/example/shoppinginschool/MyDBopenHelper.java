@@ -33,7 +33,20 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "adminName TEXT UNIQUE," +
                 "adminPsd TEXT NOT NULL);");
-            //——————订单列表是否要建立——————
+        db.execSQL("CREATE TABLE cart_recipe(" +
+                "_id integer primary key autoincrement," +
+                "recipeName TEXT," +
+                "recipePrice DOUBLE," +
+                "recipeImg TEXT," +
+                "recipeDes TEXT);");
+        //——————订单列表是否要建立——————
+        /*db.execSQL("CREATE TABLE orders(" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "orderNum INTEGER NOT NULL," +
+                "orderUser TEXT NOT NULL," +
+                "CONSTRAINT fk_user" +
+                "FOREIGN KEY (orderUser)," +
+                "REFERENCE user(userName);");*/
         db.execSQL("INSERT INTO goods (goodsName, goodsPrice) VALUES ('乐事薯片',6.5)");
         db.execSQL("INSERT INTO goods (goodsName, goodsPrice) VALUES ('可口可乐',3.0)");
         db.execSQL("INSERT INTO goods (goodsName, goodsPrice) VALUES ('卫龙辣条',5.0)");
@@ -85,5 +98,28 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
             list.add(new Goods(goodsImg,goodsName,goodsPrice,goodsDes));
         }
         return list;
+    }
+
+    public ArrayList<Cart> getAllCartData(){
+        ArrayList<Cart> list = new ArrayList<Cart>();
+        Cursor cursor = db.query("cart_recipe",null,null,null,null,null,"recipeName");
+        while(cursor.moveToNext()){
+            String recipeName = cursor.getString(cursor.getColumnIndexOrThrow("recipeName"));
+            String recipeImg = cursor.getString(cursor.getColumnIndexOrThrow("recipeImg"));
+            String recipePrice = cursor.getString(cursor.getColumnIndexOrThrow("recipePrice"));
+            String recipeDes = cursor.getString(cursor.getColumnIndexOrThrow("recipeDes"));
+            list.add(new Cart(recipeImg,recipeName,recipePrice,recipeDes));
+        }
+        return list;
+    }
+
+    public double getSumPrice() {
+        double sumPrice = 0;
+        Cursor cursor = db.query("cart_recipe",null,null,null,null,null,"recipeName");
+        while(cursor.moveToNext()){
+            String recipePrice = cursor.getString(cursor.getColumnIndexOrThrow("recipePrice"));
+            sumPrice += Double.parseDouble(recipePrice);
+        }
+        return sumPrice;
     }
 }

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:orientation="vertical"
-        android:background="#0F14E4FF">
+        android:background="@drawable/goods_backg">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -30,14 +30,6 @@ public class GoodsAdapter extends RecyclerView.Adapter<GoodsAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recy_item_goods_show,parent,false);
         final ViewHolder holder = new ViewHolder(view);
-        /*holder.goodsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(parent.getContext(), GoodsDetailActivity.class);
-                intent.putExtra("goodsdata",name);
-                parent.getContext().startActivity(intent);
-            }
-        });*/
         return holder;
     }
 

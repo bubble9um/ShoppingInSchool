@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private MyDBopenHelper myDBopenHelper;
     ImageView show_goods_img;
+    Cursor cursor;
     private SQLiteDatabase db;
     Button add_to_cart;
     TextView show_goods_name,show_goods_details,show_goods_price;
@@ -33,7 +35,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
         findViewById();
         String ke_name  = getIntent().getStringExtra("goodsdata");
         show_goods_name.setText(ke_name);
-        Cursor cursor= db.rawQuery("select * from goods where goodsName = ?",new String[]{ke_name});
+        cursor= db.rawQuery("select * from goods where goodsName = ?",new String[]{ke_name});
+        //判断是否有数据
         if(cursor.getCount()>0){
             cursor.moveToFirst();
             String goodsDes = cursor.getString(cursor.getColumnIndexOrThrow("goodsDes"));
@@ -43,19 +46,27 @@ public class GoodsDetailActivity extends AppCompatActivity {
             show_goods_price.setText(goodsPrice+"元");
             show_goods_img.setImageBitmap(MainActivity.convertStringToIcon(goodsImg));
         }
+        //ImageView 点击返回事件
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goBack();
             }
         });
+        //添加到购物车
         add_to_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //将数据插入到cart_recipe表中
+                db.execSQL("INSERT INTO cart_recipe (recipeName,recipeDes,recipeImg,recipePrice)VALUES(?,?,?,?)",
+                        new String[]{show_goods_name.getText().toString(),show_goods_details.getText().toString(),
+                                cursor.getString(cursor.getColumnIndexOrThrow("goodsImg")),cursor.getString(cursor.getColumnIndexOrThrow("goodsPrice"))
+                                });
+                Toast.makeText(GoodsDetailActivity.this,"已加入购物车",Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     private void findViewById() {
         imageButton = findViewById(R.id.back_arrow);
         show_goods_name = findViewById(R.id.show_goods_name);

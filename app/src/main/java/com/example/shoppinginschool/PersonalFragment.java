@@ -3,6 +3,7 @@ package com.example.shoppinginschool;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,11 +26,12 @@ public class PersonalFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     SharedPreferences preferences;
-    TextView username;
+    TextView username,cart_num;
     private String username1;
     MyDBopenHelper myDBopenHelper;
     SQLiteDatabase db;
     LinearLayout setting,logout;
+    int count;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -76,8 +78,18 @@ public class PersonalFragment extends Fragment {
         initView(view);
         return view;
     }
+
     private void initView(View view){
         username = view.findViewById(R.id.user_name);
+        cart_num = view.findViewById(R.id.cart_num);
+        myDBopenHelper = new MyDBopenHelper(getContext(),"GOODS_Database.db",null,1);
+        db = myDBopenHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM cart_recipe",null);
+        if (cursor.moveToFirst()){
+            count = cursor.getCount();
+        }
+        cart_num.setText(String.valueOf(count));
+        cursor.close();
         preferences = getActivity().getSharedPreferences("userinfo1", Context.MODE_PRIVATE);
         username1 = preferences.getString("userName", " ");
         username.setText(username1);

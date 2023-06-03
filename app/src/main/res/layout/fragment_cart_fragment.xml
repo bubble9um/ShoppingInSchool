@@ -27,9 +27,13 @@
         android:layout_weight="6">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/recy_view_cart" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,6 +53,7 @@
             android:layout_gravity="bottom|end"
             android:layout_weight="1"
             android:text="0元"
+            android:textColor="#673AB7"
             android:textSize="15sp"
             android:id="@+id/goods_sumprice"/>
     </LinearLayout>
@@ -57,16 +62,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_weight="0.5">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="全选"
+            android:id="@+id/choose_all"/>
         <android.widget.Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="30dp"
             android:id="@+id/pay"
             android:textColor="#FFFFFF"
             android:background="@drawable/cart_button"
             android:text="去结账"/>
     </LinearLayout>
-
+    </LinearLayout>
 
 </LinearLayout>
