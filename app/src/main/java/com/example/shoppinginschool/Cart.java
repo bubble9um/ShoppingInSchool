@@ -5,6 +5,15 @@ public class Cart {
     private String recipeName;
     private String recipePrice;
     private String recipeDes;
+    private boolean isChecked;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
     public String getRecipeImg() {
         return recipeImg;
     }

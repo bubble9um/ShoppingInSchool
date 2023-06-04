@@ -1,23 +1,16 @@
 package com.example.shoppinginschool;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GoodsDetailActivity extends AppCompatActivity {
     private ImageButton imageButton;
@@ -49,7 +42,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         }
         /* *
         *
-        *点击返回imageview时，只能通过intent跳转，导致会重复开启Activity，设想用goBack调用onBackPressed方法，成功实现返回但购物车内数据不会更新
+        *点击返回imageview时，只能通过intent跳转，导致会重复开启Activity，设想用goBack调用onBackPressed方法，能够实现同虚拟按键的返回但购物车内数据不会更新
         *                               有待修改
         * */
 

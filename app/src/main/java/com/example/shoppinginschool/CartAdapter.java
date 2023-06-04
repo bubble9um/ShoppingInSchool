@@ -8,11 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +24,15 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
     private String currentID;
     private MyDBopenHelper myDBopenHelper;
     private SQLiteDatabase db,dbReader;
-    private final List<Cart> mCartslist;
-    Context mcontext;
-    Cart cart;
+    private  List<Cart> mCartslist;
+    private Context mcontext;
+    private Cart cart;
+
+    private OnCheckedChangeListener onCheckedChangeListener;
+    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
+        this.onCheckedChangeListener = listener;
+    }
+
     public CartAdapter(List<Cart> mCartslist,Context context) {
         this.mCartslist = mCartslist;
         this.mcontext = context;
@@ -58,7 +62,47 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
             intent.putExtra("goodsdata",holder.cart_name.getText());
             mcontext.startActivity(intent);
         });
-/*
+        /*复选框
+       holder.cart_check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (holder.cart_check.isChecked()){
+                Cursor cursor = dbReader.rawQuery("SELECT _id FROM cart_recipe WHERE recipeName =?",new String[]{cart.getRecipeName()});
+                if (cursor.moveToFirst()){
+                    do {
+                        String itemID= cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+                        currentID = itemID;
+                    }while (cursor.moveToNext());
+                }
+                db.execSQL("UPDATE cart_recipe SET isCheck = ? WHERE _id = ?",new String[]{"1",currentID});
+            }else {
+                Cursor cursor = dbReader.rawQuery("SELECT _id FROM cart_recipe WHERE recipeName =?",new String[]{cart.getRecipeName()});
+                if (cursor.moveToFirst()){
+                    do {
+                        String itemID= cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+                        currentID = itemID;
+                    }while (cursor.moveToNext());
+                }
+                db.execSQL("UPDATE cart_recipe SET isCheck = ? WHERE _id = ?",new String[]{"0",currentID});
+            }
+        });*/
+
+
+        ////////////////////////////
+        /*holder.cart_check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int isCheckValue = isChecked ? 1 : 0;
+            Cursor cursor = dbReader.rawQuery("SELECT _id FROM cart_recipe WHERE recipeName =?", new String[]{cart.getRecipeName()});
+            if (cursor.moveToFirst()) {
+                do {
+                    String itemID = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+                    currentID = itemID;
+                } while (cursor.moveToNext());
+            }
+            db.execSQL("UPDATE cart_recipe SET isCheck = ? WHERE _id = ?", new String[]{String.valueOf(isCheckValue), currentID});
+            if (onCheckedChangeListener != null) {
+                onCheckedChangeListener.onCheckedChange(isChecked);
+            }
+        });*/
+
+        /*
 *
 * 删除后没有实现刷新功能，需要重新启动活动才能看到删除后的效果，有待改进。
 * 暂且还是用了intent
@@ -84,14 +128,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
                         public void onClick(DialogInterface dialogInterface, int i) {
                             db.delete("cart_recipe","_id=?",new String[]{currentID});
                             Toast.makeText(mcontext,"删除成功",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(mcontext,MainActivity.class);
-                            mcontext.startActivity(intent);
+                            mCartslist.remove(holder.getAdapterPosition());
+                            // 通知适配器发生了数据变化
+                            notifyDataSetChanged();
+                            /*Intent intent = new Intent(mcontext,MainActivity.class);
+                            mcontext.startActivity(intent);*/
                         }
                     }).show();
             return true;
         });
     }
-
 
     @Override
     public int getItemCount() {
@@ -113,4 +159,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder>{
             cart_id = itemView.findViewById(R.id.cart_id);
         }
     }
+
+    public interface OnCheckedChangeListener {
+        void onCheckedChange(boolean isChecked);
+    }
+
 }

@@ -38,7 +38,8 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
                 "recipeName TEXT," +
                 "recipePrice DOUBLE," +
                 "recipeImg TEXT," +
-                "recipeDes TEXT);");
+                "recipeDes TEXT," +
+                "isCheck integer NOT NULL DEFAULT 0);");
         /*db.execSQL("CREATE TABLE orders(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "orderNum INTEGER NOT NULL," +
@@ -114,11 +115,17 @@ public class MyDBopenHelper extends SQLiteOpenHelper {
 
     public double getSumPrice() {
         double sumPrice = 0;
-        Cursor cursor = db.query("cart_recipe",null,null,null,null,null,"recipeName");
+        //Cursor cursor = db.rawQuery("SELECT * FROM cart_recipe WHERE isCheck = 1",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM cart_recipe",null);
         while(cursor.moveToNext()){
             String recipePrice = cursor.getString(cursor.getColumnIndexOrThrow("recipePrice"));
             sumPrice += Double.parseDouble(recipePrice);
         }
         return sumPrice;
+    }
+
+    public void deleteAllCartData() {
+        //db.execSQL("DELETE  FROM cart_recipe WHERE isCheck = 1");
+        db.execSQL("DELETE  FROM cart_recipe");
     }
 }
