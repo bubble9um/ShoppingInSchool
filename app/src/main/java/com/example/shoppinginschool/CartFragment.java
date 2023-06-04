@@ -1,7 +1,12 @@
 package com.example.shoppinginschool;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +18,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -22,12 +31,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * Use the {@link CartFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CartFragment extends Fragment implements CartAdapter.OnCheckedChangeListener{
+public class CartFragment extends Fragment implements CartAdapter.OnCheckedChangeListener {
     private RecyclerView recy_view_cart;
     private MyDBopenHelper myDBopenHelper;
     TextView goods_sumprice;
     Button pay;
     private SQLiteDatabase db;
+    private final int FIRST_NOTFICATION_ID = 1600;
+    private final String CHANNEL_ID = "xmh";
+    NotificationCompat.Builder builder1;
+    NotificationManagerCompat notificationManager;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -76,12 +89,16 @@ public class CartFragment extends Fragment implements CartAdapter.OnCheckedChang
         loadData();
         return view;
     }
-    public void onActivityCreated(@Nullable Bundle savedInstanceState){
+
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         loadData();
     }
-    private void initView(View view){
-        myDBopenHelper = new MyDBopenHelper(getContext(),"GOODS_Database.db",null,1);
+
+    private void initView(View view) {
+        createNotificationChannel();
+        notificationManager = NotificationManagerCompat.from(CartFragment.this.getContext());
+        myDBopenHelper = new MyDBopenHelper(getContext(), "GOODS_Database.db", null, 1);
         db = myDBopenHelper.getReadableDatabase();
         recy_view_cart = view.findViewById(R.id.recy_view_cart);
         goods_sumprice = view.findViewById(R.id.goods_sumprice);
@@ -98,7 +115,24 @@ public class CartFragment extends Fragment implements CartAdapter.OnCheckedChang
                     public void onClick(DialogInterface dialog, int which) {
                         myDBopenHelper.deleteAllCartData();
                         loadData();
-                        Toast.makeText(getContext(),"支付成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "支付成功", Toast.LENGTH_SHORT).show();
+                        builder1 = new NotificationCompat.Builder(CartFragment.this.getContext(), CHANNEL_ID)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setSmallIcon(R.mipmap.icon_48)
+                                .setContentTitle("成功付款！")
+                                .setContentText("请你耐心等候，货物马上送到");
+                        Notification notification = builder1.build();
+                        if (ActivityCompat.checkSelfPermission(CartFragment.this.getContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+                        notificationManager.notify(FIRST_NOTFICATION_ID, notification);
                     }
                 });
                 builder.setNegativeButton("取消",null);
@@ -115,6 +149,18 @@ public class CartFragment extends Fragment implements CartAdapter.OnCheckedChang
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
         recy_view_cart.setLayoutManager(layoutManager);
         recy_view_cart.setAdapter(adapter);
+    }
+
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){             //O=26
+            CharSequence name = "我的通知渠道";
+            String description = "这些是我的通知";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,name,importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = ContextCompat.getSystemService(CartFragment.this.getContext(), NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
